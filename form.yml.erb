@@ -124,14 +124,15 @@ attributes:
     <%- end -%>
 
   modules: 
-    label: "Anaconda Version"
+    label: "R Version"
     widget: "select"
     required: true
-    value: "anaconda3/2019.10-gcc/8.3.1"
+    help: "This defines the version of R you want to load. Only the basic packages are working at the moment"
+    value: "r/4.0.2-gcc/8.3.1"
     options:
-      - ["anaconda3/2019.10-gcc/8.3.1","anaconda3/2019.10-gcc/8.3.1"]
-      - ["anaconda3/2020.07-gcc/8.3.1","anaconda3/2020.07-gcc/8.3.1"]
-      - ["anaconda3/2021.05-gcc/8.3.1","anaconda3/2021.05-gcc/8.3.1"]
+      - [ "R 3.6.1", "r/3.6.1-gcc/8.3.1"]
+      - [ "R 4.0.2", "r/4.0.2-gcc/8.3.1"]
+      - [ "R 4.0.3", "r/4.0.3-gcc/8.3.1"]
 
   pbs_modules:
     label: "List of modules to be loaded, separate by an empty space"
@@ -141,23 +142,18 @@ attributes:
       - For example: <b>openjdk/11.0.2-gcc/8.3.1 jags/4.3.0-gcc/8.3.1</b>
       </small>
 
-  pbs_venv:
-    label: "Path to Python virtual/conda environment"
-    value: ""
+  pbs_dir:
+    label: "Shiny app to run"
+    value: "~/R/shiny/app"
     help: |
-      <small> Provide an activation command to load the corresponding Python <br>
-      virtual (venv) or conda environment. You can replace NAME_OF_ENVIRONMENT <br>
-      with a corresponding conda environment, or PATH_TO_VIRTUAL_ENVIRONMENT <br>
-      with a specific path to your venv environment directory. <br>
-      - Example conda: <b>conda activate NAME_OF_ENVIRONMENT</b> <br>
-      - Example venv: <b>source PATH_TO_VIRTUAL_ENVIRONMENT/bin/activate</b> <br>
+      <small> Enter the path to the Shiny app you want to run. <br>
+        App file in this directory has to be named either app.R or server.R. 
       </small>
-      
-      
+        
 form:
   - modules
   - pbs_modules
-  - pbs_venv
+  - pbs_dir
   - pbs_select
   - pbs_ncpus
   - pbs_mem
