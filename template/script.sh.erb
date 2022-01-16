@@ -8,9 +8,10 @@ cd "${HOME}"
 
 export app_path_source=<%= context.pbs_dir.gsub /\r\n?/, "\n" %>
 
-<%- unless context.modules.blank? -%>
 # Purge the module environment to avoid conflicts
 module purge
+# Load the require modules
+module load <%= context.modules %> <%= context.pbs_modules %>
 
 <%-
   # Helper
@@ -18,7 +19,6 @@ module purge
 
   # Configure R
   r_script = session.staged_root.join("launcher.R")
-  r_env    = "module load <%= context.modules %>"
   r_cmd    = "R"
 
   # Configure Shiny
@@ -40,14 +40,26 @@ module purge
 -%>
 
 
-# Load the require modules
-module load <%= context.pbs_modules %>
+
 
 set -x
 # List loaded modules
 module list
-<%- end -%>
 
+#
+# Create Shiny App launcher script
+#
+echo "Creating Shiny App launcher..."
+(
+umask 077
+sed 's/^ \{2\}//' > "<%= r_script %>" << EOT
+sock <- "<%= app_sock %>"
+  attr(sock, "mask") <- strtoi("0077", 8)
+  options(shiny.port = sock)
+  options(shiny.launch.browser = FALSE)
+  shiny::runApp("<%= app_path %>")
+EOT
+)
 
 
 #
@@ -105,15 +117,16 @@ sed 's/^ \{2\}//' > "<%= nginx_conf %>" << EOT
   }
 EOT
 )
+
 # Set working directory to home directory
 cd "${HOME}"
+
 #
 # Start Shiny App server
 #
 (
 umask 077
-# Load the required environment
-<%= r_env %>
+
 # Output debug info
 module list
 # Launch Shiny App

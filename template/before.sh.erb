@@ -8,4 +8,4 @@ export CACHE_DIR="$(mktemp -d)"
 port=$(find_port)
 
 # Generate password 
-password="$(create_passwd 32)"
+export password="$(create_passwd 32)"
