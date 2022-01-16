@@ -29,7 +29,6 @@ module load <%= context.modules %> <%= context.pbs_modules %>
   # Configure NGINX
   nginx_conf  = session.staged_root.join("nginx.conf")
   nginx_cache = cache_root.join("nginx")
-  nginx_env   = "module load singularity"
   nginx_cmd   = <<-EOS.gsub(/^ {4}/, "")
     singularity run \
       -B "#{nginx_conf}:/usr/local/openresty/nginx/conf/nginx.conf" \
@@ -152,7 +151,6 @@ done
 # Start NGINX server
 #
 # Load required environment
-<%= nginx_env %>
 # Output debug info
 module list
 # Launch NGINX server
