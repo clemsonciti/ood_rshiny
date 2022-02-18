@@ -30,11 +30,7 @@ module load <%= context.modules %> <%= context.pbs_modules %>
   nginx_conf  = session.staged_root.join("nginx.conf")
   nginx_cache = cache_root.join("nginx")
   nginx_cmd   = <<-EOS.gsub(/^ {4}/, "")
-    singularity run \
-      -B "#{nginx_conf}:/usr/local/openresty/nginx/conf/nginx.conf" \
-      -B "#{nginx_cache}" \
-      -B "#{app_sock.dirname}" \
-      /software/external/open-resty/alpine_resty.sif
+    singularity run -B "#{nginx_conf}:/usr/local/openresty/nginx/conf/nginx.conf" -B "#{nginx_cache}" -B "#{app_sock.dirname}" /software/external/open-resty/alpine_resty.sif
   EOS
 -%>
 
@@ -150,9 +146,8 @@ done
 #
 # Start NGINX server
 #
-# Load required environment
-# Output debug info
-module list
+
 # Launch NGINX server
 set -x
+singularity --version
 <%= nginx_cmd %>
